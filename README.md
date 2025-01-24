@@ -39,12 +39,12 @@ Resources:
 
 This books service will be responsible of:
 
-- CRUD operations
-- Limit CRUD operations depending on the permissions returned through the auth-microservice
-- Log requests or failures
+- [x] CRUD operations
+- [] Limit CRUD operations depending on the permissions returned through the auth-microservice
+- [] Log requests or failures
 
 Resources:
 - Local Docker deployment
-  - Backend
-  - Database
-    - books
+  - [] Backend
+  - [x] Database
+    - [x] books
