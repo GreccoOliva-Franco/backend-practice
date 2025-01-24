@@ -2,7 +2,11 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "declaration": false,
-    "outDir": "../../dist/apps/books"
+    "outDir": "../../dist/apps/books",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@app": ["./*"],
+    }
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "test", "**/*spec.ts"]
