@@ -1,21 +1,21 @@
-import { IsDateString, IsString, IsUUID } from "class-validator";
+import { IsDateString, IsString, IsUUID } from 'class-validator';
 
 export class BookDto {
-    @IsUUID()
-    id: string;
+  @IsUUID()
+  id: string;
 
-    @IsString()
-    title: string;
+  @IsString()
+  title: string;
 
-    @IsString()
-    description: string;
+  @IsString()
+  description: string;
 
-    @IsString()
-    author: string;
+  @IsString()
+  author: string;
 
-    @IsDateString()
-    createdAt: Date;
+  @IsDateString()
+  createdAt: Date;
 
-    @IsDateString()
-    updatedAt: Date;
+  @IsDateString()
+  updatedAt: Date;
 }
