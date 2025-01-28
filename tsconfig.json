@@ -17,6 +17,13 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
-    "paths": {}
+    "paths": {
+      "@lib/hash": [
+        "libs/hash/src"
+      ],
+      "@lib/hash/*": [
+        "libs/hash/src/*"
+      ]
+    }
   }
 }

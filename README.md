@@ -21,18 +21,19 @@ This service will be responsible of:
 
 This auth service will be responsible of:
 
-- Authenticating credentials
-- Exposing an endpoint for retrieving the *user profile*
-- Exposing an endpoint for retrieving the *user profile*
-- Exposing an endpoint for retrieving the *user permissions*
-- Log requests or failures
+- [x] Sign up
+- [X] Sign in
+- [] Get *user profile*
+- [] Get *user permissions*
+- General permission management
+- Log requests or failures for monitoring
 
 Resources:
 - Local Docker deployment
   - Backend
   - Database
-    - user
-    - user-permissions
+    - users
+      - user.permissions: permission\[\]
     - permissions
 
 ## Books service (REST API service)

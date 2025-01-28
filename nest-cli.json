@@ -27,6 +27,15 @@
       "compilerOptions": {
         "tsConfigPath": "apps/auth/tsconfig.app.json"
       }
+    },
+    "hash": {
+      "type": "library",
+      "root": "libs/hash",
+      "entryFile": "index",
+      "sourceRoot": "libs/hash/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/hash/tsconfig.lib.json"
+      }
     }
   }
 }
