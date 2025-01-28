@@ -1,11 +1,24 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { Logger, ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { ENVIRONMENT } from 'apps/shared/environments';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  const { APP_PORT } = process.env;
+  app.useGlobalPipes(
+    new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }),
+  );
 
-  await app.listen(APP_PORT);
+  const configService = app.get(ConfigService);
+  const environment = configService.get<string>('APP_ENV');
+  const port = configService.get<string>('APP_PORT');
+  await app.listen(port, () => {
+    const isProduction = environment === ENVIRONMENT.PRODUCTION;
+    if (!isProduction) {
+      Logger.warn(`App running on port: ${port}`);
+    }
+  });
 }
 bootstrap();
