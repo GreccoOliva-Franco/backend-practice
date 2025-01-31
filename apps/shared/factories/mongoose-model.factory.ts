@@ -1,47 +1,30 @@
-import { Model } from 'mongoose';
+// import { HydratedDocument, Model } from 'mongoose';
+// import { ModelFactory, ModelFactoryOptions } from './model-factory.interface';
 
-interface Options<T> {
-  state: Partial<T>;
-  count: number;
-}
+// export abstract class MongooseModelFactory<T> extends ModelFactory<T> {
+//   constructor(
+//     protected readonly model: Model<T>,
+//     private options: ModelFactoryOptions<T>,
+//   ) {
+//     super(model, options);
+//   }
 
-const defaultOptions = {
-  state: {},
-  count: 1,
-};
+//   protected abstract definition(): Partial<T>;
 
-export abstract class MongooseModelFactory<T> {
-  constructor(
-    private readonly model: Model<T>,
-    private options: Options<T> = defaultOptions,
-  ) {}
+//   public withState(state: Partial<T>): this {
+//     this.options = { ...this.options, state };
 
-  protected abstract definition(): Partial<T>;
+//     return this;
+//   }
 
-  public count(count: number): this {
-    this.options = { ...this.options, count };
+//   public makeOne(): HydratedDocument<T> {
+//     return new this.model({
+//       ...this.definition(),
+//       ...this.options.state,
+//     });
+//   }
 
-    return this;
-  }
-
-  public withState(state: Partial<T>): this {
-    this.options = { ...this.options, state };
-
-    return this;
-  }
-
-  public make() {
-    return this.options.count === 1 ? this.makeOne() : this.makeMany();
-  }
-
-  private makeOne(): T {
-    return new this.model({
-      ...this.definition(),
-      ...this.options.state,
-    });
-  }
-
-  private makeMany(): T[] {
-    return Array.from({ length: this.options.count }).map(() => this.makeOne());
-  }
-}
+//   public makeMany(count: number): HydratedDocument<T>[] {
+//     return Array.from({ length: count }).map(() => this.makeOne());
+//   }
+// }
