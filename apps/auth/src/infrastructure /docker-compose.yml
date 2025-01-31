@@ -4,6 +4,6 @@ services:
     restart: always
     environment:
       - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=books-ms
+      - MYSQL_DATABASE=auth-ms
     ports:
       - "3306:3306"
