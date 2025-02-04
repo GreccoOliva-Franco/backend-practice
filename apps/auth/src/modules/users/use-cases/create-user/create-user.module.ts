@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { CreateUserService } from './create-user.service';
 import { UsersMutateModule } from '../../repositories/mutate.module';
-import { HashModule } from '@lib/hash';
+import { HashModule } from '@lib/hash/hash.module';
 import { UsersQueryModule } from '../../repositories/query.module';
 
 @Module({

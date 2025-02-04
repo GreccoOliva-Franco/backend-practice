@@ -18,20 +18,14 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@apps": [
-        "./apps"
+      "@apps/auth/*": [
+        "apps/auth/src/*"
       ],
-      "@apps/*": [
-        "./apps/*"
-      ],
-      "@lib/hash": [
-        "libs/hash/src"
+      "@apps/books/*": [
+        "apps/books/src/*"
       ],
       "@lib/hash/*": [
         "libs/hash/src/*"
-      ],
-      "@lib/utils": [
-        "libs/utils/src"
       ],
       "@lib/utils/*": [
         "libs/utils/src/*"

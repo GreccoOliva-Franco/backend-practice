@@ -93,7 +93,8 @@
       "<rootDir>/libs/"
     ],
     "moduleNameMapper": {
-      "^@apps/(|/.*)$": "<rootDir>/apps/$1",
+      "^@apps/auth(|/.*)$": "<rootDir>/apps/auth/src/$1",
+      "^@apps/books(|/.*)$": "<rootDir>/apps/books/src/$1",
       "^@lib/hash(|/.*)$": "<rootDir>/libs/hash/src/$1",
       "^@lib/utils(|/.*)$": "<rootDir>/libs/utils/src/$1"
     }

@@ -2,7 +2,7 @@ import { User } from '../../entities/users.entity';
 import { Injectable } from '@nestjs/common';
 import { UsersMutateRepository } from '../../repositories/mutate.service';
 import { CreateUserDto } from './dtos/create-user.dto';
-import { HashService } from '@lib/hash';
+import { HashService } from '@lib/hash/hash.service';
 import { UsersQueryRepository } from '../../repositories/query.repository';
 import { UserAlreadyExistsError } from './errors/user-already-exists.error';
 
