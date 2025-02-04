@@ -1,8 +1,7 @@
 /**
  * @group app.auth
- * @group auth-ms
+ * @group ms.auth
  * @group module.users
- * @group users
  * @group integration
  */
 
@@ -17,7 +16,7 @@ import { configModuleOptions } from '../../../configs/config-module.config';
 import { typeOrmModuleOptions } from '../../../configs/typeorm-config.config';
 import { CreateUserModule } from './create-user.module';
 import { CreateUserDto } from './dtos/create-user.dto';
-import { HashService } from '@lib/hash';
+import { HashService } from '@lib/hash/hash.service';
 import { UserAlreadyExistsError } from './errors/user-already-exists.error';
 
 describe(CreateUserService.name, () => {

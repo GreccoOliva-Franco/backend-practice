@@ -1,6 +1,7 @@
 /**
- * @group auth-ms
- * @group users
+ * @group app.auth
+ * @group ms.auth
+ * @group module.users
  * @group integration
  */
 
