@@ -2,6 +2,7 @@ import { FindOptionsWhere } from 'typeorm';
 import { UsersQueryRepository } from '../../repositories/query.repository';
 import { User } from '../../entities/users.entity';
 import { Injectable } from '@nestjs/common';
+import { UserCredentials } from './get-user.types';
 
 @Injectable()
 export class GetUserService {
@@ -11,13 +12,13 @@ export class GetUserService {
     return this.repository.getOne(criteria);
   }
 
-  getCredentialsByEmail(email: User['email']): Promise<User | null> {
+  getCredentialsByEmail(email: User['email']): Promise<UserCredentials | null> {
     return this.getCredentials({ email });
   }
 
   private getCredentials(
     criteria: FindOptionsWhere<User>,
-  ): Promise<User | null> {
+  ): Promise<UserCredentials | null> {
     return this.repository.getCredentials(criteria);
   }
 }
