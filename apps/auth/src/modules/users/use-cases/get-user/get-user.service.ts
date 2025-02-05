@@ -1,15 +1,17 @@
-import { FindOptionsWhere } from 'typeorm';
-import { UsersQueryRepository } from '../../repositories/query.repository';
-import { User } from '../../entities/users.entity';
+import { FindOptionsWhere, Repository } from 'typeorm';
+import { User } from '@apps/auth/modules/users/entities/users.entity';
 import { Injectable } from '@nestjs/common';
-import { UserCredentials } from './get-user.types';
+import { UserCredentials, UserProfile } from './get-user.types';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class GetUserService {
-  constructor(private readonly repository: UsersQueryRepository) {}
+  constructor(
+    @InjectRepository(User) private readonly repository: Repository<User>,
+  ) {}
 
   getOne(criteria: FindOptionsWhere<User | null>): Promise<User | null> {
-    return this.repository.getOne(criteria);
+    return this.repository.findOneBy(criteria);
   }
 
   getCredentialsByEmail(email: User['email']): Promise<UserCredentials | null> {
@@ -19,6 +21,10 @@ export class GetUserService {
   private getCredentials(
     criteria: FindOptionsWhere<User>,
   ): Promise<UserCredentials | null> {
-    return this.repository.getCredentials(criteria);
+    return this.repository.findOne({
+      where: criteria,
+      select: { id: true, email: true, password: true },
+    });
+  }
   }
 }

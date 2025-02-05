@@ -6,14 +6,14 @@
  */
 
 import { Repository } from 'typeorm';
-import { UsersFactory } from '../../factories/users.factory';
+import { UsersFactory } from '@apps/auth/modules/users/factories/users.factory';
 import { GetUserService } from './get-user.service';
-import { User } from '../../entities/users.entity';
+import { User } from '@apps/auth/modules/users/entities/users.entity';
 import { Test } from '@nestjs/testing';
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-import { configModuleOptions } from '../../../configs/config-module.config';
-import { typeOrmModuleOptions } from '../../../configs/typeorm-config.config';
+import { configModuleOptions } from '@apps/auth/modules/configs/config-module.config';
+import { typeOrmModuleOptions } from '@apps/auth/modules/configs/typeorm-config.config';
 import { GetUserModule } from './get-user.module';
 
 describe(GetUserService.name, () => {
@@ -22,6 +22,7 @@ describe(GetUserService.name, () => {
   let service: GetUserService;
   let repository: Repository<User>;
   let usersInDatabase: User[];
+  let userInDatabase: User;
 
   beforeAll(async () => {
     const modules = await Test.createTestingModule({
@@ -42,6 +43,7 @@ describe(GetUserService.name, () => {
         .pick(['email', 'password', 'firstName', 'lastName'])
         .makeMany(numberOfUsersToInsert);
       usersInDatabase = await repository.save(usersToDatabase);
+      userInDatabase = usersInDatabase[0];
     })();
   });
 
@@ -50,63 +52,65 @@ describe(GetUserService.name, () => {
   });
 
   describe('getOne', () => {
+    const method = 'getOne';
+
     it('should be defined', () => {
-      expect(service.getOne).toBeDefined();
+      expect(service[method]).toBeDefined();
     });
 
     it('should return null when no user matches', async () => {
-      const serviceSpy = jest.spyOn(service, 'getOne');
-      const result = await service.getOne({ email: '' });
+      const spy = jest.spyOn(service, method);
+      const result = await service[method]({ email: '' });
       if (result) {
         throw new Error(
           'Test conditions do not match test hypotesis: user should not exist',
         );
       }
 
-      expect(serviceSpy).toHaveBeenCalledTimes(1);
+      expect(spy).toHaveBeenCalledTimes(1);
       expect(result).toBeNull();
     });
 
     it('should get the targeted user', async () => {
-      const serviceSpy = jest.spyOn(service, 'getOne');
-      const email = usersInDatabase[0].email;
-      const result = await service.getOne({ email });
+      const spy = jest.spyOn(service, method);
+      const email = userInDatabase.email;
+      const result = await service[method]({ email });
 
-      expect(serviceSpy).toHaveBeenCalledTimes(1);
+      expect(spy).toHaveBeenCalledTimes(1);
       expect(result).toBeInstanceOf(User);
       expect(result.email).toBe(email);
     });
   });
 
   describe('getCredentialsByEmail', () => {
+    const method = 'getCredentialsByEmail';
     it('should be defined', () => {
-      expect(service.getCredentialsByEmail).toBeDefined();
+      expect(service[method]).toBeDefined();
     });
 
     it('should return null if no user is matched', async () => {
-      const serviceSpy = jest.spyOn(service, 'getCredentialsByEmail');
-      const result = await service.getCredentialsByEmail('');
+      const spy = jest.spyOn(service, method);
+      const result = await service[method]('');
       if (result) {
         throw new Error(
           'Test conditions do not match test hypotesis: user should not exist',
         );
       }
 
-      expect(serviceSpy).toHaveBeenCalledTimes(1);
+      expect(spy).toHaveBeenCalledTimes(1);
       expect(result).toBeNull();
     });
 
     it('should get the credentials of the targeted user', async () => {
-      const serviceSpy = jest.spyOn(service, 'getCredentialsByEmail');
-      const targetUser = usersInDatabase[0];
-      const result = await service.getCredentialsByEmail(targetUser.email);
+      const spy = jest.spyOn(service, method);
+      const { id, email, password } = userInDatabase;
+      const result = await service[method](email);
 
-      expect(serviceSpy).toHaveBeenCalledTimes(1);
+      expect(spy).toHaveBeenCalledTimes(1);
       expect(result).toBeInstanceOf(User);
-      expect(result).toMatchObject({
-        email: targetUser.email,
-        password: targetUser.password,
-      });
+      expect(result).toMatchObject({ id, email, password });
+    });
+  });
     });
   });
 });
