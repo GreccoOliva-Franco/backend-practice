@@ -111,6 +111,32 @@ describe(GetUserService.name, () => {
       expect(result).toMatchObject({ id, email, password });
     });
   });
+
+  describe('getProfileById', () => {
+    const method = 'getProfileById';
+
+    it('should be defined', () => {
+      expect(service.getProfileById).toBeDefined();
+    });
+
+    it('should return null when user does not exist', async () => {
+      const spy = jest.spyOn(service, method);
+      const idNotInDatabase =
+        Math.max(...usersInDatabase.map((user) => user.id)) + 1;
+      const result = await service[method](idNotInDatabase);
+
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(result).toBeNull();
+    });
+
+    it('should return profile when user exists', async () => {
+      const spy = jest.spyOn(service, method);
+      const { id, email, firstName, lastName } = userInDatabase;
+      const result = await service[method](id);
+
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(result).toBeInstanceOf(User);
+      expect(result).toMatchObject({ id, email, firstName, lastName });
     });
   });
 });
