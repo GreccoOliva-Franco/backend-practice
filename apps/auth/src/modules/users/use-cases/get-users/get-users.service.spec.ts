@@ -85,5 +85,13 @@ describe(GetUsersService.name, () => {
         expect(user.email).toBe(email);
       });
     });
+
+    it('should retrieve no users when no user matches', async () => {
+      const spy = jest.spyOn(service, method);
+      const result = await service[method]({ email: '' });
+
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(result).toHaveLength(0);
+    });
   });
 });
