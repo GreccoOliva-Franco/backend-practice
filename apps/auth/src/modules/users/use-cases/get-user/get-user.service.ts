@@ -18,6 +18,10 @@ export class GetUserService {
     return this.getCredentials({ email });
   }
 
+  getProfileById(id: User['id']): Promise<UserProfile | null> {
+    return this.getProfileBy({ id });
+  }
+
   private getCredentials(
     criteria: FindOptionsWhere<User>,
   ): Promise<UserCredentials | null> {
@@ -26,5 +30,13 @@ export class GetUserService {
       select: { id: true, email: true, password: true },
     });
   }
+
+  private getProfileBy(
+    criteria: FindOptionsWhere<User>,
+  ): Promise<UserProfile | null> {
+    return this.repository.findOne({
+      where: criteria,
+      select: { id: true, email: true, firstName: true, lastName: true },
+    });
   }
 }

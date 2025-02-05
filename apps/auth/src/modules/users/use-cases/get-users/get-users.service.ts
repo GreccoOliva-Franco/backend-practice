@@ -1,13 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { FindOptionsWhere } from 'typeorm';
-import { UsersQueryRepository } from '../../repositories/query.repository';
-import { User } from '../../entities/users.entity';
+import { FindOptionsWhere, Repository } from 'typeorm';
+import { User } from '@apps/auth/modules/users/entities/users.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class GetUsersService {
-  constructor(private readonly repository: UsersQueryRepository) {}
+  constructor(
+    @InjectRepository(User) private readonly repository: Repository<User>,
+  ) {}
 
   getMany(criteria: FindOptionsWhere<User>): Promise<User[]> {
-    return this.repository.getMany(criteria);
+    return this.repository.findBy(criteria);
   }
 }
