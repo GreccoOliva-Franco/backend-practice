@@ -5,7 +5,7 @@ import {
   TypeOrmModuleOptions,
   TypeOrmOptionsFactory,
 } from '@nestjs/typeorm';
-import { ENVIRONMENT } from '../../../../shared/environments';
+import { ENVIRONMENT } from '@apps/shared/environments';
 
 @Injectable()
 class TypeOrmConfigService implements TypeOrmOptionsFactory {
@@ -53,7 +53,7 @@ class TypeOrmConfigService implements TypeOrmOptionsFactory {
     return {
       type: this.configService.get<'mysql' | 'postgres'>('DATABASE_PROVIDER'),
       host: this.configService.get<string>('DATABASE_HOST'),
-      port: parseInt(this.configService.get<string>('DATABASE_PORT')),
+      port: this.configService.get<number>('DATABASE_PORT', { infer: true }),
       username: this.configService.get<string>('DATABASE_USERNAME'),
       password: this.configService.get<string>('DATABASE_PASSWORD'),
       database: this.configService.get<string>('DATABASE_NAME'),

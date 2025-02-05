@@ -95,6 +95,7 @@
     "moduleNameMapper": {
       "^@apps/auth(|/.*)$": "<rootDir>/apps/auth/src/$1",
       "^@apps/books(|/.*)$": "<rootDir>/apps/books/src/$1",
+      "^@apps/shared(|/.*)$": "<rootDir>/apps/shared/$1",
       "^@lib/hash(|/.*)$": "<rootDir>/libs/hash/src/$1",
       "^@lib/utils(|/.*)$": "<rootDir>/libs/utils/src/$1"
     }

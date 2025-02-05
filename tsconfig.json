@@ -24,6 +24,9 @@
       "@apps/books/*": [
         "apps/books/src/*"
       ],
+      "@apps/shared/*": [
+        "apps/shared/*"
+      ],
       "@lib/hash/*": [
         "libs/hash/src/*"
       ],
