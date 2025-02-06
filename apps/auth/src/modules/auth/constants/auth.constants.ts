@@ -1,1 +1,1 @@
-export const URL_PATH = 'auth';
+export const AUTH_URL_PATH = 'auth';

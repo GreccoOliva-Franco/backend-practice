@@ -6,14 +6,14 @@
  */
 
 import { Repository } from 'typeorm';
-import { UsersFactory } from '../../factories/users.factory';
+import { UsersFactory } from '@apps/auth/modules/users/factories/users.factory';
 import { CreateUserService } from './create-user.service';
-import { User } from '../../entities/users.entity';
+import { User } from '@apps/auth/modules/users/entities/users.entity';
 import { Test } from '@nestjs/testing';
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-import { configModuleOptions } from '../../../configs/config-module.config';
-import { typeOrmModuleOptions } from '../../../configs/typeorm-config.config';
+import { configModuleOptions } from '@apps/auth/modules/configs/config-module.config';
+import { typeOrmModuleOptions } from '@apps/auth/modules/configs/typeorm-config.config';
 import { CreateUserModule } from './create-user.module';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { HashService } from '@lib/hash/hash.service';
@@ -21,6 +21,9 @@ import { UserAlreadyExistsError } from './errors/user-already-exists.error';
 
 describe(CreateUserService.name, () => {
   const factory = new UsersFactory();
+  const createUserDto: CreateUserDto = factory
+    .pick(['email', 'password', 'firstName', 'lastName'])
+    .makeOne();
   let service: CreateUserService;
   let repository: Repository<User>;
   let hashService: HashService;
@@ -46,41 +49,38 @@ describe(CreateUserService.name, () => {
   });
 
   describe('create', () => {
+    const method = 'create';
+
     it('should be defined', () => {
-      expect(service.create).toBeDefined();
+      expect(service[method]).toBeDefined();
     });
 
     it('should create a user and hash its password', async () => {
-      const userToCreate = factory
-        .pick(['email', 'password', 'firstName', 'lastName'])
-        .makeOne() satisfies CreateUserDto;
-      const userEnteredPassword = userToCreate.password;
-      const serviceSpy = jest.spyOn(service, 'create');
-      const result = await service.create(userToCreate);
+      const userEnteredPassword = createUserDto.password;
+      const serviceSpy = jest.spyOn(service, method);
+      const result = await service[method](createUserDto);
 
       expect(serviceSpy).toHaveBeenCalledTimes(1);
       expect(result).toHaveProperty('id');
       expect(result.id).toBe(1);
 
-      const userInDatabase = await repository.findOneOrFail({
-        where: { email: userToCreate.email },
-        select: { email: true, password: true },
+      const userInDatabase = await repository.findOne({
+        where: { email: createUserDto.email },
+        select: { password: true },
       });
-      expect(
+      expect(userInDatabase).not.toBeNull();
+      await expect(
         hashService.compare(userEnteredPassword, userInDatabase.password),
       ).resolves.toBe(true);
     });
 
-    it('should throw error on duplicate user.email', async () => {
-      const serviceSpy = jest.spyOn(service, 'create');
-      const userToCreate = factory
-        .pick(['email', 'password', 'firstName', 'lastName'])
-        .makeOne() satisfies CreateUserDto;
+    it('should throw error for users with the same email', async () => {
+      const serviceSpy = jest.spyOn(service, method);
 
-      await service.create(userToCreate);
+      await service[method](createUserDto);
 
       expect(serviceSpy).toHaveBeenCalledTimes(1);
-      expect(service.create(userToCreate)).rejects.toThrow(
+      await expect(service[method](createUserDto)).rejects.toThrow(
         UserAlreadyExistsError,
       );
       expect(serviceSpy).toHaveBeenCalledTimes(2);

@@ -4,8 +4,9 @@ import { SignInDto } from './dtos/sign-in.dto';
 import { InvalidCredentialsError } from './errors/invalid-credentials.error';
 import { UserCredentials } from '@apps/auth/modules/users/use-cases/get-user/get-user.types';
 import { HashService } from '@lib/hash/hash.service';
-import { AuthToken } from './sign-in.type';
+import { AuthToken, AuthTokenPayload } from './sign-in.type';
 import { JwtService } from '@nestjs/jwt';
+import { TOKEN_TYPE } from '@apps/auth/modules/auth/guards/auth.guard';
 
 @Injectable()
 export class SignInService {
@@ -47,13 +48,12 @@ export class SignInService {
   }
 
   private async getAuthToken(user: UserCredentials): Promise<AuthToken> {
-    const tokenPayload = { id: user.id };
+    const tokenPayload = { sub: user.id } satisfies AuthTokenPayload;
     const token = await this.jwtService.signAsync(tokenPayload);
 
     return {
       header: 'Authorization',
-      type: 'Bearer',
-      token,
+      value: `${TOKEN_TYPE.BEARER} ${token}`,
     } satisfies AuthToken;
   }
 }

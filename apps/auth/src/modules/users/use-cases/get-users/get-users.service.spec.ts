@@ -15,10 +15,14 @@ import { User } from '@apps/auth/modules/users/entities/users.entity';
 import { FindOptionsWhere, Repository } from 'typeorm';
 import { UsersFactory } from '@apps/auth/modules/users/factories/users.factory';
 import { GetUsersModule } from './get-users.module';
+import { CreateUserDto } from '@apps/auth/modules/users/use-cases/create-user/dtos/create-user.dto';
 
 describe(GetUsersService.name, () => {
   const numberOfUsersToTest: number = 2;
   const factory = new UsersFactory();
+  const usersToDatabase: CreateUserDto[] = factory
+    .pick(['email', 'password', 'firstName', 'lastName'])
+    .makeMany(numberOfUsersToTest);
   let service: GetUsersService;
   let repository: Repository<User>;
   let usersInDatabase: User[];
@@ -36,15 +40,9 @@ describe(GetUsersService.name, () => {
     service = modules.get(GetUsersService);
     repository = modules.get(getRepositoryToken(User));
 
-    await (async function createDatabaseState(): Promise<void> {
-      await repository.clear();
-
-      const usersToDatabase = factory
-        .pick(['email', 'password', 'firstName', 'lastName'])
-        .makeMany(numberOfUsersToTest);
-      usersInDatabase = await repository.save(usersToDatabase);
-      userInDatabase = usersInDatabase[0];
-    })();
+    await repository.clear();
+    usersInDatabase = await repository.save(usersToDatabase);
+    userInDatabase = usersInDatabase[0];
   });
 
   beforeEach(() => {
@@ -60,6 +58,7 @@ describe(GetUsersService.name, () => {
 
     it('should retrieve all users', async () => {
       const spy = jest.spyOn(service, method);
+
       const result = await service[method]({});
 
       expect(spy).toHaveBeenCalledTimes(1);
@@ -76,6 +75,7 @@ describe(GetUsersService.name, () => {
       const spy = jest.spyOn(service, method);
       const { email } = userInDatabase;
       const criteria = { email } satisfies FindOptionsWhere<User>;
+
       const result = await service[method](criteria);
 
       expect(spy).toHaveBeenCalledTimes(1);
@@ -88,6 +88,7 @@ describe(GetUsersService.name, () => {
 
     it('should retrieve no users when no user matches', async () => {
       const spy = jest.spyOn(service, method);
+
       const result = await service[method]({ email: '' });
 
       expect(spy).toHaveBeenCalledTimes(1);

@@ -15,10 +15,14 @@ import { ConfigModule } from '@nestjs/config';
 import { configModuleOptions } from '@apps/auth/modules/configs/config-module.config';
 import { typeOrmModuleOptions } from '@apps/auth/modules/configs/typeorm-config.config';
 import { GetUserModule } from './get-user.module';
+import { CreateUserDto } from '@apps/auth/modules/users/use-cases/create-user/dtos/create-user.dto';
 
 describe(GetUserService.name, () => {
   const numberOfUsersToInsert = 2;
   const factory = new UsersFactory();
+  const usersToDatabase: CreateUserDto[] = factory
+    .pick(['email', 'password', 'firstName', 'lastName'])
+    .makeMany(numberOfUsersToInsert);
   let service: GetUserService;
   let repository: Repository<User>;
   let usersInDatabase: User[];
@@ -36,15 +40,10 @@ describe(GetUserService.name, () => {
     service = modules.get(GetUserService);
     repository = modules.get(getRepositoryToken(User));
 
-    await (async function createDatabaseState(): Promise<void> {
-      await repository.clear();
+    await repository.clear();
 
-      const usersToDatabase = factory
-        .pick(['email', 'password', 'firstName', 'lastName'])
-        .makeMany(numberOfUsersToInsert);
-      usersInDatabase = await repository.save(usersToDatabase);
-      userInDatabase = usersInDatabase[0];
-    })();
+    usersInDatabase = await repository.save(usersToDatabase);
+    userInDatabase = usersInDatabase[0];
   });
 
   beforeEach(() => {
@@ -84,6 +83,7 @@ describe(GetUserService.name, () => {
 
   describe('getCredentialsByEmail', () => {
     const method = 'getCredentialsByEmail';
+
     it('should be defined', () => {
       expect(service[method]).toBeDefined();
     });
@@ -116,7 +116,7 @@ describe(GetUserService.name, () => {
     const method = 'getProfileById';
 
     it('should be defined', () => {
-      expect(service.getProfileById).toBeDefined();
+      expect(service[method]).toBeDefined();
     });
 
     it('should return null when user does not exist', async () => {
