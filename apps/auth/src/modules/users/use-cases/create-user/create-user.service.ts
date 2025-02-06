@@ -1,29 +1,35 @@
 import { User } from '../../entities/users.entity';
 import { Injectable } from '@nestjs/common';
-import { UsersMutateRepository } from '../../repositories/mutate.service';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { HashService } from '@lib/hash/hash.service';
-import { UsersQueryRepository } from '../../repositories/query.repository';
 import { UserAlreadyExistsError } from './errors/user-already-exists.error';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class CreateUserService {
   constructor(
-    private readonly queryRepository: UsersQueryRepository,
-    private readonly mutateRepository: UsersMutateRepository,
+    @InjectRepository(User) private readonly repository: Repository<User>,
     private readonly hashService: HashService,
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<Pick<User, 'id'>> {
-    const user = await this.queryRepository.getOne({
-      email: createUserDto.email,
-    });
-    if (user) {
+    await this.throwIfUserAlreadyExists(createUserDto);
+
+    await this.hashUserPassword(createUserDto);
+
+    const { id } = await this.repository.save(createUserDto);
+    return { id };
+  }
+
+  private async throwIfUserAlreadyExists(
+    createUserDto: CreateUserDto,
+  ): Promise<void> {
+    const { email } = createUserDto;
+    const userAlreadyExists = await this.repository.existsBy({ email });
+    if (userAlreadyExists) {
       throw new UserAlreadyExistsError();
     }
-    await this.hashUserPassword(createUserDto);
-    const userCreated = await this.mutateRepository.create(createUserDto);
-    return { id: userCreated.id };
   }
 
   private async hashUserPassword(createUserDto: CreateUserDto): Promise<void> {
