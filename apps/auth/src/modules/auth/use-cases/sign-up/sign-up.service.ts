@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateUserService } from '@apps/auth/modules/users/use-cases/create-user/create-user.service';
 import { SignUpDto } from './dtos/sign-up.dto';
 import { UserAlreadyExistsError as UserAlreadyExistsUsersError } from '@apps/auth/modules/users/use-cases/create-user/errors/user-already-exists.error';
@@ -15,6 +15,8 @@ export class SignUpService {
       if (error instanceof UserAlreadyExistsUsersError) {
         throw new UserAlreadyExistsError();
       }
+
+      throw new InternalServerErrorException();
     }
   }
 }
