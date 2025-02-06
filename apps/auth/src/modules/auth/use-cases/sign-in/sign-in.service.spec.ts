@@ -6,7 +6,6 @@
  */
 
 import { UsersFactory } from '@apps/auth/modules/users/factories/users.factory';
-import { SignInController } from './sign-in.controller';
 import { Test } from '@nestjs/testing';
 import { SignInModule } from './sign-in.module';
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
@@ -21,8 +20,9 @@ import { configModuleOptions } from '@apps/auth/modules/configs/config-module.co
 import { typeOrmModuleOptions } from '@apps/auth/modules/configs/typeorm-config.config';
 import { InvalidCredentialsError } from './errors/invalid-credentials.error';
 import { AuthToken } from './sign-in.type';
+import { SignInService } from './sign-in.service';
 
-describe(SignInController.name, () => {
+describe(SignInService.name, () => {
   const method = 'execute';
   const factory = new UsersFactory();
   const signUpDto: SignUpDto = factory
@@ -32,7 +32,7 @@ describe(SignInController.name, () => {
     email: signUpDto.email,
     password: signUpDto.password,
   };
-  let controller: SignInController;
+  let service: SignInService;
   let repository: Repository<User>;
 
   beforeAll(async () => {
@@ -46,7 +46,7 @@ describe(SignInController.name, () => {
       ],
     }).compile();
 
-    controller = modules.get(SignInController);
+    service = modules.get(SignInService);
     repository = modules.get(getRepositoryToken(User));
     const createUserService = modules.get(CreateUserService);
 
@@ -60,12 +60,12 @@ describe(SignInController.name, () => {
 
   describe(method, () => {
     it('should be defined', () => {
-      expect(controller[method]).toBeDefined();
+      expect(service[method]).toBeDefined();
     });
 
     it('should login with correct credentials', async () => {
-      const spy = jest.spyOn(controller, method);
-      const result = await controller.execute(signInDto);
+      const spy = jest.spyOn(service, method);
+      const result = await service.execute(signInDto);
 
       expect(spy).toHaveBeenCalledTimes(1);
       (['header', 'type', 'token'] as (keyof AuthToken)[]).forEach((prop) => {
@@ -78,9 +78,9 @@ describe(SignInController.name, () => {
         ...signInDto,
         email: signInDto.email + 'some',
       };
-      const spy = jest.spyOn(controller, method);
+      const spy = jest.spyOn(service, method);
 
-      expect(controller.execute(signInDtoToThrow)).rejects.toThrow(
+      expect(service.execute(signInDtoToThrow)).rejects.toThrow(
         InvalidCredentialsError,
       );
       expect(spy).toHaveBeenCalledTimes(1);
@@ -91,9 +91,9 @@ describe(SignInController.name, () => {
         ...signInDto,
         password: signInDto.password + '.',
       } satisfies SignInDto;
-      const spy = jest.spyOn(controller, method);
+      const spy = jest.spyOn(service, method);
 
-      expect(controller.execute(signInDtoToThrow)).rejects.toThrow();
+      expect(service.execute(signInDtoToThrow)).rejects.toThrow();
       expect(spy).toHaveBeenCalledTimes(1);
     });
   });
