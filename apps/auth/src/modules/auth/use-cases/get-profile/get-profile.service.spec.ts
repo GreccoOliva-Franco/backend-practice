@@ -55,7 +55,7 @@ describe(GetProfileService.name, () => {
     it("should retrieve the target user's profile", async () => {
       const spy = jest.spyOn(service, method);
       const { id, email, firstName, lastName } = userInDatabase;
-      const result = await service.execute(id);
+      const result = await service[method](id);
 
       expect(spy).toHaveBeenCalledTimes(1);
       expect(result).toMatchObject({ id, email, firstName, lastName });
@@ -65,7 +65,7 @@ describe(GetProfileService.name, () => {
       const spy = jest.spyOn(service, method);
       const idNotInDatabase = userInDatabase.id + 1;
 
-      expect(service.execute(idNotInDatabase)).rejects.toThrow(
+      await expect(service[method](idNotInDatabase)).rejects.toThrow(
         UserDoesNotExistError,
       );
       expect(spy).toHaveBeenCalledTimes(1);
