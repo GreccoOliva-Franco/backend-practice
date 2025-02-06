@@ -12,7 +12,7 @@ import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '@apps/auth/modules/users/entities/users.entity';
 import { Repository } from 'typeorm';
 import { CreateUserService } from '@apps/auth/modules/users/use-cases/create-user/create-user.service';
-import { SignUpDto } from '../sign-up/dtos/sign-up.dto';
+import { SignUpDto } from '@apps/auth/modules/auth/use-cases/sign-up/dtos/sign-up.dto';
 import { CreateUserModule } from '@apps/auth/modules/users/use-cases/create-user/create-user.module';
 import { SignInDto } from './dtos/sign-in.dto';
 import { ConfigModule } from '@nestjs/config';
@@ -21,6 +21,8 @@ import { typeOrmModuleOptions } from '@apps/auth/modules/configs/typeorm-config.
 import { InvalidCredentialsError } from './errors/invalid-credentials.error';
 import { AuthToken } from './sign-in.type';
 import { SignInService } from './sign-in.service';
+import { JwtModule } from '@nestjs/jwt';
+import { jwtModuleAsyncOptions } from '@apps/auth/modules/configs/jwt-module.config';
 
 describe(SignInService.name, () => {
   const method = 'execute';
@@ -40,6 +42,7 @@ describe(SignInService.name, () => {
       imports: [
         ConfigModule.forRoot(configModuleOptions),
         TypeOrmModule.forRootAsync(typeOrmModuleOptions),
+        JwtModule.registerAsync(jwtModuleAsyncOptions),
 
         SignInModule,
         CreateUserModule,
@@ -65,10 +68,10 @@ describe(SignInService.name, () => {
 
     it('should login with correct credentials', async () => {
       const spy = jest.spyOn(service, method);
-      const result = await service.execute(signInDto);
+      const result = await service[method](signInDto);
 
       expect(spy).toHaveBeenCalledTimes(1);
-      (['header', 'type', 'token'] as (keyof AuthToken)[]).forEach((prop) => {
+      (['header', 'value'] as (keyof AuthToken)[]).forEach((prop) => {
         expect(result).toHaveProperty(prop);
       });
     });
@@ -80,7 +83,7 @@ describe(SignInService.name, () => {
       };
       const spy = jest.spyOn(service, method);
 
-      expect(service.execute(signInDtoToThrow)).rejects.toThrow(
+      await expect(service[method](signInDtoToThrow)).rejects.toThrow(
         InvalidCredentialsError,
       );
       expect(spy).toHaveBeenCalledTimes(1);
@@ -93,7 +96,9 @@ describe(SignInService.name, () => {
       } satisfies SignInDto;
       const spy = jest.spyOn(service, method);
 
-      expect(service.execute(signInDtoToThrow)).rejects.toThrow();
+      await expect(service[method](signInDtoToThrow)).rejects.toThrow(
+        InvalidCredentialsError,
+      );
       expect(spy).toHaveBeenCalledTimes(1);
     });
   });

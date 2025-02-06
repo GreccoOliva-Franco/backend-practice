@@ -9,6 +9,8 @@ import { Request } from 'express';
 import { JwtModuleConfigService } from '@apps/auth/modules/configs/jwt-module.config';
 import { AuthTokenPayload } from '@apps/auth/modules/auth/use-cases/sign-in/sign-in.type';
 import { ConfigService } from '@nestjs/config';
+import { Reflector } from '@nestjs/core';
+import { IS_PUBLIC_ENDPOINT } from './public.guard';
 
 export enum TOKEN_TYPE {
   BEARER = 'Bearer',
@@ -21,11 +23,16 @@ export class AuthGuard implements CanActivate {
   constructor(
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
+    private readonly reflector: Reflector,
   ) {
     this.jwtModuleConfigService = new JwtModuleConfigService(configService);
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
+    if (this.isPublicEndpoint(context)) {
+      return true;
+    }
+
     const request = context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);
     if (!token) {
@@ -45,6 +52,13 @@ export class AuthGuard implements CanActivate {
     }
 
     return true;
+  }
+
+  private isPublicEndpoint(context: ExecutionContext): boolean {
+    return this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_ENDPOINT, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
   }
 
   private extractTokenFromHeader(request: Request): string | undefined {
