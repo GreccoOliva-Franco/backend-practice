@@ -22,11 +22,11 @@ This service will be responsible of:
 This auth service will be responsible of:
 
 - [x] Sign up
-- [X] Sign in
-- [] Get *user profile*
-- [] Get *user permissions*
-- General permission management
-- Log requests or failures for monitoring
+- [x] Sign in
+- [x] Get *user profile*
+- [ ] Get *user permissions*
+- [ ] General permission management
+- [ ] Log requests or failures for monitoring
 
 Resources:
 - Local Docker deployment
@@ -41,11 +41,11 @@ Resources:
 This books service will be responsible of:
 
 - [x] CRUD operations
-- [] Limit CRUD operations depending on the permissions returned through the auth-microservice
-- [] Log requests or failures
+- [ ] Limit CRUD operations depending on the permissions returned through the auth-microservice
+- [ ] Log requests or failures
 
 Resources:
 - Local Docker deployment
-  - [] Backend
+  - [ ] Backend
   - [x] Database
     - [x] books
