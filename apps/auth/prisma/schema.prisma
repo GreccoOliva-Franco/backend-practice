@@ -21,7 +21,7 @@ model User {
   lastName        String
 
   emailVerifiedAt DateTime?
-  createdAt       DateTime  @default(now())
+  createdAt       DateTime
   updatedAt       DateTime?
   deletedAt       DateTime?
 }
