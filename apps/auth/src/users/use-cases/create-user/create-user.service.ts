@@ -4,6 +4,10 @@ import { HashService } from '@lib/hash/hash.service';
 import { UserAlreadyExistsError } from './errors/user-already-exists.error';
 import { PrismaClient } from '@prisma/client';
 import { CreatedUser } from './create-user.types';
+import dayjs from 'dayjs';
+import dayjsUtcPlugin from 'dayjs/plugin/utc';
+
+dayjs.extend(dayjsUtcPlugin);
 
 @Injectable()
 export class CreateUserService {
@@ -18,7 +22,7 @@ export class CreateUserService {
     await this.hashUserPassword(createUserDto);
 
     const user = await this.prisma.user.create({
-      data: createUserDto,
+      data: { ...createUserDto, createdAt: dayjs.utc().toISOString() },
       select: { id: true, email: true, firstName: true, lastName: true },
     });
 
