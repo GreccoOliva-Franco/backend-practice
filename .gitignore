@@ -1,4 +1,5 @@
 # local databases
+*.db
 *.sqlite
 
 # compiled output
