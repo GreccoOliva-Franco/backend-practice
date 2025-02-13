@@ -12,7 +12,7 @@ export class EmailQueueService {
 
   public async add(emailDto: EmailDto): Promise<void> {
     try {
-      await this.queueService.add('hola', emailDto);
+      await this.queueService.add('send', emailDto);
     } catch {
       await this.trackFailure(emailDto);
     }

@@ -21,32 +21,32 @@ export class EmailProviderService {
     private readonly prisma: PrismaClient,
     private readonly jwtService: JwtService,
   ) {
-    this.transporter = nodemailer.createTransport({
-      host: this.configService.get<string>('EMAIL_HOST'),
-      port: this.configService.get<number>('EMAIL_PORT', { infer: true }),
-    });
+    const host = this.configService.get<string>('EMAIL_HOST');
+    const port = this.configService.get<number>('EMAIL_PORT', { infer: true });
+    this.transporter = nodemailer.createTransport({ host, port });
   }
 
   public async send(emailDto: EmailDto): Promise<void> {
     const email = await this.getEmailByDto(emailDto);
 
-    await this.transporter.sendMail({
-      from: 'test@test.com',
-      ...email.getNodemailerFields(),
-    });
+    await this.transporter.sendMail(email.getTransporterFields());
   }
 
   private async getEmailByDto(emailDto: EmailDto): Promise<EmailBuilder> {
+    let instance: EmailBuilder;
+
     switch (emailDto.emailId) {
       case EmailId.WELCOME_EMAIL: {
-        return new WelcomeEmail(emailDto, this.prisma);
+        instance = new WelcomeEmail(emailDto, this.prisma);
+        break;
       }
       case EmailId.VERIFICATION_EMAIL: {
-        return new EmailVerificationEmail(
+        instance = new EmailVerificationEmail(
           emailDto,
           this.prisma,
           this.jwtService,
         );
+        break;
       }
       default: {
         throw new Error(
@@ -54,5 +54,9 @@ export class EmailProviderService {
         );
       }
     }
+
+    await instance.build();
+
+    return instance;
   }
 }

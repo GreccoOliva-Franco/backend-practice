@@ -11,6 +11,6 @@ export class EmailService {
   }
 
   public async sendMany(emailDtos: EmailDto[]): Promise<void> {
-    emailDtos.map((dto) => this.sendOne(dto));
+    await Promise.all(emailDtos.map((dto) => this.sendOne(dto)));
   }
 }
