@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <header><h2>Hi {{ user.firstName }},</h2></header>
+    <main>
+        <p>To verify your email you can either do one of this options</p>
+        <ul>
+            <li>Click this <a href="http://localhost:3001/auth/sign-up?token={{token}}">Link</a></li>
+            <li>Copy and paste this link in your browser: http://localhost:3001/auth/sign-up?token={{token}}</li>
+        </ul>
+    </main>
+</body>
+</html>
