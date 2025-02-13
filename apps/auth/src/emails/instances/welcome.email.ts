@@ -1,10 +1,8 @@
 import { EmailBuilder } from './email-builder.class';
 import * as Mustache from 'mustache';
-import { Injectable } from '@nestjs/common';
 import { EmailDto } from '../email.type';
 import { PrismaClient } from '@prisma/client';
 
-@Injectable()
 export class WelcomeEmail extends EmailBuilder {
   constructor(
     emailDto: EmailDto,
