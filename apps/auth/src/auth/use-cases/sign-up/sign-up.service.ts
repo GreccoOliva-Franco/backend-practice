@@ -31,7 +31,7 @@ export class SignUpService {
   private async sendEmailsToUser(user: CreatedUser): Promise<void> {
     const emailDtos: EmailDto[] = [
       EmailId.WELCOME_EMAIL,
-      // EmailId.VERIFICATION_EMAIL,
+      EmailId.VERIFICATION_EMAIL,
     ].map((emailId) => ({ emailId, userId: user.id }) satisfies EmailDto);
 
     await this.emailService.sendMany(emailDtos);
