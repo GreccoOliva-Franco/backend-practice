@@ -1,10 +1,20 @@
-import { Body, Controller, Get, Post, Query, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Query,
+  Res,
+} from '@nestjs/common';
 import { VerifyEmailDto } from './dtos/verify-email.dto';
 import { VerifyEmailService } from './verify-email.service';
 import { AUTH_URL_PATH } from '@apps/auth/auth/constants/auth.constants';
 import { PublicEndpoint } from '@apps/auth/auth/guards/public.guard';
 import { VERIFY_EMAIL_PATH } from './verify-email.constants';
 import { Response } from 'express';
+
 @Controller(AUTH_URL_PATH)
 export class VerifyEmailController {
   constructor(private readonly service: VerifyEmailService) {}
@@ -23,4 +33,11 @@ export class VerifyEmailController {
       },
     );
   }
+
+  @PublicEndpoint()
+  @HttpCode(HttpStatus.OK)
+  @Post(VERIFY_EMAIL_PATH)
+  async verify(@Body() verifyEmailDto: VerifyEmailDto) {
+    return this.service.verify(verifyEmailDto);
   }
+}
