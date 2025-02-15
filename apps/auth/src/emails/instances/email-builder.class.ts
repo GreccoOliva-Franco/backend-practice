@@ -1,7 +1,7 @@
 import { EmailDto, EmailId } from '../email.type';
 import * as path from 'path';
 import * as fs from 'fs';
-import * as Mustache from 'mustache';
+import * as Handlebars from 'handlebars';
 
 export abstract class EmailBuilder {
   protected emailId: EmailId;
@@ -39,21 +39,26 @@ export abstract class EmailBuilder {
     };
   }
 
-  protected getTemplate(): Promise<string> {
-    return fs.promises.readFile(this.getTemplatePath(), 'utf-8');
+  protected async getTemplate() {
+    const template = await fs.promises.readFile(
+      this.getTemplatePath(),
+      'utf-8',
+    );
+
+    return Handlebars.compile(template);
   }
 
   private async _build(): Promise<void> {
     const template = await this.getTemplate();
     const templateContext = this.getTemplateContext();
-    this.html = Mustache.render(template, templateContext);
+    this.html = template(templateContext);
   }
 
   private getTemplatePath(): string {
     return path.join(
       process.cwd(),
       './apps/auth/src/emails/templates/',
-      this.emailId + '.mustache',
+      this.emailId + '.hbs',
     );
   }
 
