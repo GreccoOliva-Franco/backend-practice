@@ -4,8 +4,8 @@ import { HashService } from '@lib/hash/hash.service';
 import { UserAlreadyExistsError } from './errors/user-already-exists.error';
 import { PrismaClient } from '@prisma/client';
 import { CreatedUser } from './create-user.types';
-import dayjs from 'dayjs';
-import dayjsUtcPlugin from 'dayjs/plugin/utc';
+import * as dayjs from 'dayjs';
+import * as dayjsUtcPlugin from 'dayjs/plugin/utc';
 
 dayjs.extend(dayjsUtcPlugin);
 
