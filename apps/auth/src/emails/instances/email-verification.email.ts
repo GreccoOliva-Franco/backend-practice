@@ -33,6 +33,7 @@ export class EmailVerificationEmail extends EmailBuilder {
     return '<my-app>: Email verification required';
   }
   protected getTemplateContext() {
-    return { user: this.user, token: this.token };
+    const { user, token } = this;
+    return { user, token };
   }
 }

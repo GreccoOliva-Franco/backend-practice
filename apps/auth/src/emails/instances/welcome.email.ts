@@ -29,6 +29,7 @@ export class WelcomeEmail extends EmailBuilder {
     return 'Welcome to <my-app> please enjoy the ride with us';
   }
   protected async getTemplateContext() {
-    return { user: this.user };
+    const { user } = this;
+    return { user };
   }
 }
