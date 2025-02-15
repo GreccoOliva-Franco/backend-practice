@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <header>
+        <h1>Email verification page</h1>
+    </header>
+
+    <main>
+        <form method="post" action="/auth/email-verification">
+            <input type="hidden" name="token" value="{{token}}"/>
+            <button type="submit">Verify my email</button>
+        </form>
+    </main>
+</body>
+</html>

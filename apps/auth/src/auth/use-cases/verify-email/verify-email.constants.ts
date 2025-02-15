@@ -1,0 +1,1 @@
+export const VERIFY_EMAIL_PATH = 'email-verification';
