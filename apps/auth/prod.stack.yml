@@ -1,0 +1,43 @@
+services:
+  app-db:
+    image: postgres
+    restart: always
+    env_file: .env
+    volumes:
+      - app-db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USE=${DATABASE_USER}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+
+  queue-db:
+    image: redis:6.2-alpine
+    restart: always
+    volumes: 
+      - queue-db:/data
+    command: redis-server --save 20 1 --loglevel warning
+
+  app:
+    build:
+      context: ./../..
+      dockerfile: ./apps/auth/prod.app.Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - app-db
+      - queue-db
+    env_file:
+      - .env
+
+  worker:
+    build:
+      context: ./../..
+      dockerfile: ./prod.worker.Dockerfile
+    restart: always
+    depends_on:
+      - app-db
+      - queue-db
+    env_file:
+      - .env
+
+volumes:
+  queue-db:
+  app-db:
