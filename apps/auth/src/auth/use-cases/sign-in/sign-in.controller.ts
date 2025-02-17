@@ -3,12 +3,14 @@ import { AUTH_URL_PATH } from '@apps/auth/auth/constants/auth.constants';
 import { SignInDto } from './dtos/sign-in.dto';
 import { SignInService } from './sign-in.service';
 import { AuthToken } from './sign-in.type';
+import { PublicEndpoint } from '@apps/auth/auth/guards/public.guard';
 
 @Controller(AUTH_URL_PATH)
 export class SignInController {
   constructor(private readonly service: SignInService) {}
 
   @HttpCode(HttpStatus.OK)
+  @PublicEndpoint()
   @Post('sign-in')
   execute(@Body() signInDto: SignInDto): Promise<AuthToken> {
     return this.service.execute(signInDto);
