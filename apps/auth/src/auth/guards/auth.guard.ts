@@ -46,7 +46,7 @@ export class AuthGuard implements CanActivate {
         verifyOptions,
       );
 
-      request['user'] = payload.sub;
+      request['user'] = payload.user;
     } catch {
       throw new UnauthorizedException();
     }
