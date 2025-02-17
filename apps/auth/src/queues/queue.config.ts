@@ -12,12 +12,13 @@ class BullMqConfigurationService {
   public createSharedConfiguration():
     | BullRootModuleOptions
     | Promise<BullRootModuleOptions> {
-    const queuePort = this.configService.get<number>('QUEUE_PORT', {
+    const port = this.configService.get<number>('QUEUE_PORT', {
       infer: true,
     });
+    const host = this.configService.get<string>('QUEUE_HOST');
 
     return {
-      connection: { port: queuePort },
+      connection: { host, port },
     };
   }
 }
