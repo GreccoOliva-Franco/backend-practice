@@ -18,7 +18,7 @@ export class SignUpService {
     try {
       const user = await this.createUserService.create(signUpDto);
 
-      this.sendEmailsToUser(user);
+      await this.sendEmailsToUser(user);
     } catch (error) {
       if (error instanceof UserAlreadyExistsUsersError) {
         throw new UserAlreadyExistsError();
