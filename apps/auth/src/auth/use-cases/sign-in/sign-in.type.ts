@@ -6,5 +6,5 @@ export type AuthToken = {
 };
 
 export type AuthTokenPayload = {
-  sub: User['id'];
+  user: User['id'];
 };

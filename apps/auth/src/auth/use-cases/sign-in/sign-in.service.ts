@@ -48,7 +48,7 @@ export class SignInService {
   }
 
   private async getAuthToken(user: UserCredentials): Promise<AuthToken> {
-    const tokenPayload = { sub: user.id } satisfies AuthTokenPayload;
+    const tokenPayload = { user: user.id } satisfies AuthTokenPayload;
     const token = await this.jwtService.signAsync(tokenPayload);
 
     return {
