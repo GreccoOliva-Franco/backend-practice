@@ -33,6 +33,9 @@
       "@lib/utils/*": [
         "libs/utils/src/*"
       ]
-    }
-  }
+    },
+  },
+  "assets": [
+    { "include": "**/@views/**/*.hbs", "watchAssets": true },
+  ],
 }
