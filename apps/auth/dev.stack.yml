@@ -8,6 +8,8 @@ services:
     environment:
       - POSTGRES_USER=${DATABASE_USER}
       - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+    ports:
+      - 5432:5432
 
   queue-db:
     image: redis:6.2-alpine
@@ -30,7 +32,7 @@ services:
     env_file:
       - .env
     ports:
-      - ${APP_PORT}:${APP_PORT}
+      - 3001:${APP_PORT}
 
   worker:
     build:
@@ -45,6 +47,12 @@ services:
       - ./../../libs:/usr/local/app/libs
     env_file:
       - .env
+
+  mailpit:
+    image: axllent/mailpit
+    restart: unless-stopped
+    ports:
+      - 8025:8025
 
 volumes:
   queue-db:
