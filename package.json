@@ -9,7 +9,7 @@
     "build": "nest build",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "start": "nest start",
-    "dev": "nest start --watch",
+    "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/apps/application/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
@@ -46,7 +46,7 @@
   },
   "devDependencies": {
     "@faker-js/faker": "^9.4.0",
-    "@nestjs/cli": "^10.0.0",
+    "@nestjs/cli": "^10.4.9",
     "@nestjs/schematics": "^10.0.0",
     "@nestjs/testing": "^10.4.15",
     "@suites/di.nestjs": "^3.0.1",
